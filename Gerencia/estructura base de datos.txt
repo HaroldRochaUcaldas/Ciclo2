@@ -1,0 +1,28 @@
+CREATE TABLE empleados(
+    fecha_ingreso date NOT null,
+    fecha_retiro date,
+    sueldo double,
+    idCarnet int ,
+    nombres varchar(50),
+    apellidos varchar(50),
+    cedula bigint NOT null,
+    telefono varchar(50),
+    direccion varchar(50),
+    id_cargo bigint NOT null,
+    PRIMARY key (cedula),
+    FOREIGN KEY(id_cargo) REFERENCES cargos(id)
+);
+
+CREATE TABLE administrativos(
+    id int NOT null AUTO_INCREMENT PRIMARY KEY,
+    area_encargada varchar(50),  
+    cedula_administrador bigint NOT null, 
+    FOREIGN KEY(cedula_administrador) REFERENCES empleados(cedula)
+);   
+
+CREATE TABLE cargos(
+    id bigint PRIMARY KEY AUTO_INCREMENT,
+    nombre varchar(50),
+    disponibilidad boolean,
+    funciones varchar(500)
+);
