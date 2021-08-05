@@ -77,6 +77,5 @@ public abstract class Persona {
         return true;
     }
     
-    public abstract void funciones(Cargo miCargo);
-    
+    public abstract void descripcion();
 }

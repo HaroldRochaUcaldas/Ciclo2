@@ -13,7 +13,15 @@ public class Cargo {
     private long id;
     private String nombre;
     private  boolean disponibilidad;
+    private String funciones;
 
+    public Cargo(long id, String nombre, boolean disponibilidad, String funciones) {
+        this.id = id;
+        this.nombre = nombre;
+        this.disponibilidad = disponibilidad;
+        this.funciones = funciones;
+    }    
+    
     public long getId() {
         return id;
     }
@@ -24,6 +32,10 @@ public class Cargo {
 
     public boolean isDisponibilidad() {
         return disponibilidad;
+    }
+
+    public String getFunciones() {
+        return funciones;
     }
 
     public boolean setId(long id) {
@@ -38,6 +50,11 @@ public class Cargo {
 
     public boolean setDisponibilidad(boolean disponibilidad) {
         this.disponibilidad = disponibilidad;
+        return true;
+    }
+
+    public boolean setFunciones(String funciones) {
+        this.funciones = funciones;
         return true;
     }
     

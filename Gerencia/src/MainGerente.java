@@ -14,7 +14,7 @@ import mibibliioteca.Empleado;
  */
 public class MainGerente {
     public static void main(String[] args) {
-        Empleado empleado1= new Administrativa();
-        empleado1.
+        Administrativa administrador= new Administrativa();
+        administrador.crud();
     }
 }
