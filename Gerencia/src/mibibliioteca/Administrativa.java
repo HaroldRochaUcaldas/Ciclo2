@@ -16,7 +16,9 @@ public class Administrativa extends Empleado {
 
     protected String area;
     protected ArrayList<Empleado> subordinados = new ArrayList();
-
+    protected ArrayList<Cargo> Cargos = new ArrayList();
+    private ConexionMysql conexionAdministrador= new ConexionMysql("localhost", "root", "", "bd_empresa_pruebas");
+    
     //private String area;
     public Administrativa(String area, String fechaIngreso, String fechaRetiro, double sueldo, long cedula, String nombres, String apellidos, String telefono, String direccion) {
         //    super(fechaIngreso, fechaRetiro, sueldo, cedula, nombres, apellidos, telefono, direccion);
@@ -58,6 +60,18 @@ public class Administrativa extends Empleado {
         String direccion;
         String fechaIngreso;
         double salario;
+        ArrayList<String> parametros = new ArrayList<>();
+        ArrayList<String> nombresParametros = new ArrayList<>();
+               nombresParametros.add("nombres");
+        nombresParametros.add("apellidos");
+        nombresParametros.add("cedula");
+        nombresParametros.add("telefono");
+        nombresParametros.add("direccion");   
+        nombresParametros.add("fecha_ingreso");
+//        nombresParametros.add("fecha_retiro");
+        nombresParametros.add("sueldo");
+//        nombresParametros.add("idCarnet");
+        nombresParametros.add("id_cargo");
         while (operaciones != 5) {
             System.out.println("Ingrese 1.para crear subordinado, 2. para editar subordinado, 3 para mostrar informacion del subordinado, 4 para borrar subordiando 5 para salir del menu ");
             operaciones = Short.parseShort(entrada.nextLine());
@@ -65,23 +79,34 @@ public class Administrativa extends Empleado {
                 case 1:
                     System.out.println("Ingrese los nombres: ");
                     nombres = entrada.nextLine();
+                    parametros.add(nombres);
                     System.out.println("Ingrese los apellidos: ");
                     apellidos = entrada.nextLine();
+                    parametros.add(apellidos);
                     System.out.println("Ingrese la cedula: ");
                     cedula = Long.parseLong(entrada.nextLine());
+                    parametros.add(cedula+"");
                     System.out.println("Ingrese el telefono: ");
                     telefono = entrada.nextLine();
+                    parametros.add(telefono);
                     System.out.println("Ingrese la direccion: ");
                     direccion = entrada.nextLine();
-                    System.out.println("Ingrese la fecha de ingreso(dd/mm/aaaa): ");
+                    parametros.add(direccion);
+                    System.out.println("Ingrese la fecha de ingreso(aaaa/mm/dd): ");
                     fechaIngreso = entrada.nextLine();
+                    parametros.add(fechaIngreso);
                     System.out.println("Ingrese el sueldo: ");
                     sueldo = Double.parseDouble(entrada.nextLine());
-
-                    Cargo cargoSubordinado = new Cargo(1, "operario", true, "operara carro");
-
+                    parametros.add(sueldo+"");
+                    conexionAdministrador.conectar();
+                    //conexionAdministrador.consultaSelect("cargos");
+                    Cargo cargoSubordinado = new Cargo(2, "operario", true, "operara carro");
+                    parametros.add(2+"");
                     Empleado nuevoSubordinado = new Empleado(fechaIngreso, sueldo, cedula, nombres, apellidos, telefono, direccion, cargoSubordinado);
                     this.subordinados.add(nuevoSubordinado);
+                    conexionAdministrador.conectar();
+                    conexionAdministrador.consultaInsert("empleados", nombresParametros, parametros);
+                    conexionAdministrador.cerrarconexion();
                     break;
                 case 2:
                     System.out.println("Ingrese la cedula");
