@@ -24,7 +24,14 @@ public class ConexionMysql {
     //   private String nombreTabla;
 
     public ConexionMysql(String url, String usuario, String contraseña, String baseDedatos) {
-        this.url = "jdbc:mysql://" + url;
+        this.url = "jdbc:mysql://" + url + ":3306";
+        this.usuario = usuario;
+        this.contraseña = contraseña;
+        this.basedeDatos = baseDedatos;
+    }
+
+    public ConexionMysql(String url, String puerto, String usuario, String contraseña, String baseDedatos) {
+        this.url = "jdbc:mysql://" + url + ":" + puerto;
         this.usuario = usuario;
         this.contraseña = contraseña;
         this.basedeDatos = baseDedatos;
@@ -50,32 +57,41 @@ public class ConexionMysql {
         return hConsultas;
     }
 
-    public void setUrl(String url) {
+    public boolean setUrl(String url) {
         this.url = url;
+        return true;
     }
 
-    public void setUsuario(String usuario) {
+    public boolean setUsuario(String usuario) {
         this.usuario = usuario;
+        return true;
     }
 
-    public void setContraseña(String contraseña) {
+    public boolean setContraseña(String contraseña) {
         this.contraseña = contraseña;
+        return true;
     }
 
-    public void setBasedeDatos(String basedeDatos) {
+    public boolean setBasedeDatos(String basedeDatos) {
         this.basedeDatos = basedeDatos;
+        return true;
     }
 
-    public void sethConsultas(ArrayList<String> hConsultas) {
+    public boolean sethConsultas(ArrayList<String> hConsultas) {
         this.hConsultas = hConsultas;
+        return true;
     }
-    
-    public void conectar() {
+
+    public boolean conectar() {
+        boolean est_conexion;
         try {
             this.miconexion = DriverManager.getConnection(url + "/" + basedeDatos, usuario, contraseña);
+            est_conexion = true;
         } catch (Exception e) {
             System.out.println("error en conexion" + e);
+            est_conexion = false;
         }
+        return est_conexion;
     }
 
     public void cerrarconexion() {
@@ -98,15 +114,15 @@ public class ConexionMysql {
         }
         for (int i = 0; i < parametros.size(); i++) {
             if (i + 1 == parametros.size()) {
-                consulta = consulta + parametros.get(i)+"')";
+                consulta = consulta + parametros.get(i) + "')";
             } else {
-                consulta = consulta + parametros.get(i) +"', '";
+                consulta = consulta + parametros.get(i) + "', '";
             }
         }
         System.out.println(consulta);
         try {
             PreparedStatement pst = this.miconexion.prepareStatement(consulta);
-/*            for (int i = 0; i < parametros.size(); i++) {
+            /*            for (int i = 0; i < parametros.size(); i++) {
                 pst.setString(i + 1, parametros.get(i));
                 // System.out.println(parametros.get(i)+"");
             }*/
@@ -146,62 +162,121 @@ public class ConexionMysql {
         }
         return est_consulta;
     }
+
+    public boolean consultaUpdate(String nombreTabla, String nombresParametro, String parametro, String nombreCampoDonde, String elemento) {
+        String consulta = "update " + nombreTabla + " set ";
+        boolean est_consulta;
+
+        consulta = consulta + nombresParametro + " = ? where " + nombreCampoDonde + " = " + elemento;
+        System.out.println(consulta);
+        try {
+            PreparedStatement pst = this.miconexion.prepareStatement(consulta);
+            pst.setString(1, parametro);
+            pst.executeUpdate();
+            pst.close();
+            est_consulta = true;
+        } catch (Exception e) {
+            System.out.println("no se puedo insertar los valores" + e);
+            est_consulta = false;
+        }
+        return est_consulta;
+    }
+
+    public String[][] consultaNameColumns(String nombreTabla) {
+        String consulta = "SHOW COLUMNS FROM " +this.basedeDatos+"."+ nombreTabla + ";";
+        String[][] datos = null;
+        System.out.println(consulta);
+        try {
+            PreparedStatement pst = this.miconexion.prepareStatement(consulta);
+            ResultSet rs = pst.executeQuery();
+//                  int size = 10;
+            rs.last();
+            int sizeRow = rs.getRow();
+            rs.first();
+            int sizeColumn = rs.getMetaData().getColumnCount();
+            rs.first();
+            datos = new String[sizeRow][sizeColumn];
+            //System.out.println(sizeRow);
+            //System.out.println(sizeColumn);
+            for (int i = 1; i <= sizeRow; i++) {
+                for (int j = 1; j <= sizeColumn; j++) {
+           //         System.out.println(rs.getString(j));
+                    datos[i - 1][j - 1] = rs.getString(j);
+                }
+                rs.next();
+            }
+            pst.close();
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("no se puedo insertar los valores" + e);
+        }
+        return datos;
+    }
     
-        public boolean consultaSelect(String nombreTabla) {
+    public String[][] consultaSelect(String nombreTabla) {
         String consulta = "select * from " + nombreTabla + ";";
-        boolean est_consulta;
-        System.out.println(consulta);
+        String[][] datos = null;
+       System.out.println(consulta);
         try {
             PreparedStatement pst = this.miconexion.prepareStatement(consulta);
             ResultSet rs = pst.executeQuery();
-            int i = 1;
-//           int size = 10;
-            int size = rs.getMetaData().getColumnCount();
+//                  int size = 10;
+            rs.last();
+            int sizeRow = rs.getRow();
             rs.first();
-            System.out.println(size);
-            while (i-1 != size) {
-                System.out.println(rs.getString(i));
-                i++;
+            int sizeColumn = rs.getMetaData().getColumnCount();
+            rs.first();
+            datos = new String[sizeRow][sizeColumn];
+           // System.out.println(sizeRow);
+           // System.out.println(sizeColumn);
+            for (int i = 1; i <= sizeRow; i++) {
+                for (int j = 1; j <= sizeColumn; j++) {
+         //           System.out.println(rs.getString(j));
+                    datos[i - 1][j - 1] = rs.getString(j);
+                }
+                rs.next();
             }
             pst.close();
             rs.close();
-            est_consulta = true;
         } catch (Exception e) {
             System.out.println("no se puedo insertar los valores" + e);
-            est_consulta = false;
         }
-        return est_consulta;
+        return datos;
     }
 
-    public boolean consultaSelect(String nombreTabla, String nombreCampoDonde, String elemento) {
+    public String[][] consultaSelect(String nombreTabla, String nombreCampoDonde, String elemento) {
         String consulta = "select * from " + nombreTabla + " where " + nombreCampoDonde + " = " + elemento;
-        boolean est_consulta;
+        String[][] datos = null;
         System.out.println(consulta);
         try {
             PreparedStatement pst = this.miconexion.prepareStatement(consulta);
             ResultSet rs = pst.executeQuery();
-            int i = 1;
-//           int size = 10;
-            int size = rs.getMetaData().getColumnCount();
+            rs.last();
+            int sizeRow = rs.getRow();
             rs.first();
-            System.out.println(size);
-            while (i-1 != size) {
-                System.out.println(rs.getString(i));
-                i++;
+            int sizeColumn = rs.getMetaData().getColumnCount();
+            rs.first();
+            datos = new String[sizeRow][sizeColumn];
+            //System.out.println(sizeRow);
+            //System.out.println(sizeColumn);
+            for (int i = 1; i <= sizeRow; i++) {
+                for (int j = 1; j <= sizeColumn; j++) {
+       //             System.out.println(rs.getString(j));
+                    datos[i - 1][j - 1] = rs.getString(j);
+                }
+                rs.next();
             }
             pst.close();
             rs.close();
-            est_consulta = true;
         } catch (Exception e) {
             System.out.println("no se puedo insertar los valores" + e);
-            est_consulta = false;
         }
-        return est_consulta;
+        return datos;
     }
 
-    public boolean consultaSelect(String nombreTabla, ArrayList<String> nombresParametros, String nombreCampoDonde, String elemento) {
+    public String[][] consultaSelect(String nombreTabla, ArrayList<String> nombresParametros, String nombreCampoDonde, String elemento) {
         String consulta = "select ";
-        boolean est_consulta;
+        String[][] datos = null;
         for (int i = 0; i < nombresParametros.size(); i++) {
             if (i + 1 == nombresParametros.size()) {
                 consulta = consulta + " " + nombresParametros.get(i) + " ";
@@ -214,38 +289,75 @@ public class ConexionMysql {
         try {
             PreparedStatement pst = this.miconexion.prepareStatement(consulta);
             ResultSet rs = pst.executeQuery();
-            int i = 1;
-//           int size = 10;
-            int size = rs.getMetaData().getColumnCount();
+            rs.last();
+            int sizeRow = rs.getRow();
             rs.first();
-            System.out.println(size);
-            while (i-1 != size) {
-                System.out.println(rs.getString(i));
-                i++;
+            int sizeColumn = rs.getMetaData().getColumnCount();
+            rs.first();
+            datos = new String[sizeRow][sizeColumn];
+            //System.out.println(sizeRow);
+            //System.out.println(sizeColumn);
+            for (int i = 1; i <= sizeRow; i++) {
+                for (int j = 1; j <= sizeColumn; j++) {
+     //               System.out.println(rs.getString(j));
+                    datos[i - 1][j - 1] = rs.getString(j);
+                }
+                rs.next();
             }
             pst.close();
             rs.close();
+        } catch (Exception e) {
+            System.out.println("no se puedo insertar los valores" + e);
+        }
+        return datos;
+    }
+
+    public String[][] consultaSelect(String nombreTabla, String nombresParametro, String nombreCampoDonde, String elemento) {
+        String consulta = "select ";
+        String[][] datos = null;
+        consulta = consulta + " " + nombresParametro + " ";
+        consulta = consulta + " from " + nombreTabla + " where " + nombreCampoDonde + " = " + elemento;
+        System.out.println(consulta);
+        try {
+            PreparedStatement pst = this.miconexion.prepareStatement(consulta);
+            ResultSet rs = pst.executeQuery();
+            rs.last();
+            int sizeRow = rs.getRow();
+            rs.first();
+            int sizeColumn = rs.getMetaData().getColumnCount();
+            rs.first();
+            datos = new String[sizeRow][sizeColumn];
+            //System.out.println(sizeRow);
+           // System.out.println(sizeColumn);
+            for (int i = 1; i <= sizeRow; i++) {
+                for (int j = 1; j <= sizeColumn; j++) {
+                   // System.out.println(rs.getString(j));
+                    datos[i - 1][j - 1] = rs.getString(j);
+                }
+                rs.next();
+            }
+            pst.close();
+            rs.close();
+        } catch (Exception e) {
+            System.out.println("no se puedo insertar los valores" + e);
+        }
+        return datos;
+    }
+
+    public boolean consultaDelete(String nombreTabla, String nombreCampoDonde, String elemento) {
+        String consulta = "DELETE FROM " + nombreTabla + " WHERE " + nombreCampoDonde + "=" + elemento + ";";
+        boolean est_consulta;
+        System.out.println(consulta);
+        try {
+            PreparedStatement pst = this.miconexion.prepareStatement(consulta);
+            pst.executeUpdate();
+
+            pst.close();
             est_consulta = true;
         } catch (Exception e) {
             System.out.println("no se puedo insertar los valores" + e);
             est_consulta = false;
         }
         return est_consulta;
-    }
-    
-    public void consultaDelete(String nombreTabla,String nombreCampoDonde, String elemento){
-          String consulta="DELETE FROM " +nombreTabla + " WHERE "+ nombreCampoDonde+"="+elemento+";";
-          boolean est_consulta;
-          System.out.println(consulta);
-          try {
-            PreparedStatement pst = this.miconexion.prepareStatement(consulta);
-            pst.executeUpdate();
-            
-            pst.close();
-            est_consulta = true;
-        } catch (Exception e) {
-            System.out.println("no se puedo insertar los valores" + e);
-            est_consulta = false;
-        }
     }
 }

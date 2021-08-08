@@ -48,7 +48,6 @@ public class Empleado extends Persona {
     public Empleado(String fechaIngreso, double sueldo, long cedula, String nombres, String apellidos, String telefono, String direccion, Cargo miCargo) {
 //        super(cedula, nombres, apellidos, telefono, direccion);
         this.fechaIngreso = fechaIngreso;
-        this.fechaRetiro = fechaRetiro;
         this.sueldo = sueldo;
         this.miCargo = miCargo;
         this.cedula = cedula;

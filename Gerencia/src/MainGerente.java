@@ -14,13 +14,13 @@ import mibibliioteca.*;
 public class MainGerente {
 
     public static void main(String[] args) {
-           Administrativa administrador= new Administrativa();
+       ConexionMysql conexion = new ConexionMysql("localhost", "root", "", "bd_empresa_pruebas");
+           Administrativa administrador= new Administrativa(conexion);
            administrador.crud();
 /*      ArrayList<String> parametros = new ArrayList<>();
         ArrayList<String> nombresParametros = new ArrayList<>();
         ArrayList<String> parametros1 = new ArrayList<>();
         ArrayList<String> nombresParametros1 = new ArrayList<>();
-        ConexionMysql conexion = new ConexionMysql("localhost", "root", "", "bd_empresa_pruebas");
         conexion.conectar();
         nombresParametros.add("fecha_ingreso");
         nombresParametros.add("fecha_retiro");
@@ -47,8 +47,10 @@ public class MainGerente {
         nombresParametros1.add("idCarnet");
         parametros1.add("2021/10/07");*/
         //conexion.consultaUpdate("empleados", nombresParametros1, parametros1, "cedula", "987654321");
-      //conexion.consultaSelect("empleados", "cedula", "987654321");
-     // conexion.consultaSelect("empleados", nombresParametros1, "cedula", "987654321");
-     // conexion.consultaDelete("empleados", "cedula", "987654321");
+        //conexion.conectar();
+      //  conexion.consultaSelect("empleados");
+        //conexion.consultaSelect("empleados", "cedula", "987654321");
+        // conexion.consultaSelect("empleados", nombresParametros1, "cedula", "987654321");
+        // conexion.consultaDelete("empleados", "cedula", "987654321");
     }
 }

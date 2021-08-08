@@ -5,6 +5,8 @@
  */
 package mibibliioteca;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author harld
@@ -14,6 +16,7 @@ public class Cargo {
     private String nombre;
     private  boolean disponibilidad;
     private String funciones;
+    private ConexionMysql conexioCargos;
 
     public Cargo(long id, String nombre, boolean disponibilidad, String funciones) {
         this.id = id;
@@ -21,6 +24,10 @@ public class Cargo {
         this.disponibilidad = disponibilidad;
         this.funciones = funciones;
     }    
+
+    public Cargo(ConexionMysql conexionCargos) {
+        this.conexioCargos=conexionCargos;
+    }
     
     public long getId() {
         return id;
@@ -58,6 +65,20 @@ public class Cargo {
         return true;
     }
     
+    public String[][] consultarCargos(){
+       conexioCargos.conectar();
+       ArrayList<String> nombresParametros=new ArrayList<>();
+       nombresParametros.add("id");
+       nombresParametros.add("nombre");
+       String[][] datos=conexioCargos.consultaSelect("cargos", nombresParametros, "disponibilidad", "1");
+       conexioCargos.cerrarconexion();
+       return datos;
+    }
     
-    
+    public boolean cambiarDisponibilidad(String disponibilidad,String idCargo){
+        conexioCargos.conectar();
+        conexioCargos.consultaUpdate("cargos", "disponibilidad",disponibilidad,"id", idCargo);
+        conexioCargos.cerrarconexion();
+        return true;
+    }
 }
