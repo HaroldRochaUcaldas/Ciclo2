@@ -23,6 +23,7 @@ CREATE TABLE empleados(
 );
 
 INSERT INTO `empleados`(`fecha_ingreso`, `sueldo`, `nombres`, `apellidos`, `cedula`, `telefono`, `direccion`, `id_cargo`) VALUES ('2021/08/08','3000000','Harold Armando','Rocha Sanchez','0123456789','3166227466','cr 51','1');
+INSERT INTO `empleados`(`fecha_ingreso`, `sueldo`, `nombres`, `apellidos`, `cedula`, `telefono`, `direccion`, `id_cargo`) VALUES ('2021/08/08','2000000','Andres Felipe','Rocha Sanchez','9876543210','3152127550','cr 26','2');
 
 CREATE TABLE administrativos(
     id int NOT null AUTO_INCREMENT PRIMARY KEY,
