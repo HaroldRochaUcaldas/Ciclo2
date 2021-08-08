@@ -1,3 +1,12 @@
+CREATE TABLE cargos(
+    id bigint PRIMARY KEY AUTO_INCREMENT,
+    nombre varchar(50),
+    disponibilidad boolean,
+    funciones varchar(500)
+);
+
+INSERT INTO `cargos`(`nombre`, `disponibilidad`, `funciones`) VALUES ('Gerente','0','-Debe administrar a los operarios de las taquillas\n-Debe gestiornar a cada operario');
+INSERT INTO `cargos`(`nombre`, `disponibilidad`, `funciones`) VALUES ('Operario taquilla 1','0','-Debe recibir a los clientes\n-gestionar los espacios en el parqueadero y reportarlo a su supervisor')
 CREATE TABLE empleados(
     fecha_ingreso date NOT null,
     fecha_retiro date,
@@ -13,16 +22,12 @@ CREATE TABLE empleados(
     FOREIGN KEY(id_cargo) REFERENCES cargos(id)
 );
 
+INSERT INTO `empleados`(`fecha_ingreso`, `sueldo`, `nombres`, `apellidos`, `cedula`, `telefono`, `direccion`, `id_cargo`) VALUES ('08/08/2021','3000000','Harold Armando','Rocha Sanchez','0123456789','3166227466','cr 51','1')
+
 CREATE TABLE administrativos(
     id int NOT null AUTO_INCREMENT PRIMARY KEY,
     area_encargada varchar(50),  
     cedula_administrador bigint NOT null, 
     FOREIGN KEY(cedula_administrador) REFERENCES empleados(cedula)
 );   
-
-CREATE TABLE cargos(
-    id bigint PRIMARY KEY AUTO_INCREMENT,
-    nombre varchar(50),
-    disponibilidad boolean,
-    funciones varchar(500)
-);
+INSERT INTO `administrativos`(`area_encargada`, `cedula_administrador`) VALUES ('taquillas','0123456789')
