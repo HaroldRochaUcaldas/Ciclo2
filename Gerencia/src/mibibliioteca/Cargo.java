@@ -65,7 +65,7 @@ public class Cargo {
         return true;
     }
     
-    public String[][] consultarCargos(){
+    public String[][] consultarCargosDisponibles(){
        conexioCargos.conectar();
        ArrayList<String> nombresParametros=new ArrayList<>();
        nombresParametros.add("id");

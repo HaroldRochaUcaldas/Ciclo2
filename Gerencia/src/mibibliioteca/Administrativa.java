@@ -109,7 +109,7 @@ public class Administrativa extends Empleado {
                     conexionAdministrador.conectar();
                     //conexionAdministrador.consultaSelect("cargos");
                     Cargo cargoSubordinado = new Cargo(conexionAdministrador);
-                    cargosDisponibles = cargoSubordinado.consultarCargos();
+                    cargosDisponibles = cargoSubordinado.consultarCargosDisponibles();
                     System.out.println("Seleccione un cargo disponible");
                     for (int j = 0; j < cargosDisponibles.length; j++) {
                         System.out.println(cargosDisponibles[0][j] + "." + cargosDisponibles[j][1]);
@@ -255,7 +255,7 @@ public class Administrativa extends Empleado {
                                     conexionAdministrador.conectar();
                                     String[][] cargoviejo = conexionAdministrador.consultaSelect("empleados", "id_cargo", "cedula", cedula_s);
                                     conexionAdministrador.cerrarconexion();
-                                    cargosDisponibles = nuevo.consultarCargos();
+                                    cargosDisponibles = nuevo.consultarCargosDisponibles();
                                     System.out.println("Seleccione un cargo disponible");
                                     for (int j = 0; j < cargosDisponibles.length; j++) {
                                         System.out.println(cargosDisponibles[0][j] + "." + cargosDisponibles[j][1]);
